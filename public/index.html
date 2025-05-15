@@ -1,12 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shiny Ride Detailing</title>
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  <!-- External Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+  <!-- My Scripts -->
+  <script type="module" src="main.js"></script>
 </head>
+
 <body>
   <header>
     <h1>Shiny Ride Detailing</h1>
@@ -26,35 +37,43 @@
   <section class="booking">
     <h2>Reservar Cita</h2>
     <form id="appointment-form">
-      <input type="text" name="name" placeholder="Nombre completo" required>
-      <input type="tel" name="phone" placeholder="Teléfono" required>
-      <input type="text" name="service" placeholder="Servicio deseado" required>
-      <input type="datetime-local" name="datetime" required>
+      <!-- Customer Name -->
+      <input type="text" id="name" name="name" placeholder="Nombre completo" required>
+      <small id="name-error" style="color: red; display: none;">Por favor ingresa un nombre válido (solo
+        letras).</small>
+
+      <!-- Customer Phone -->
+      <input type="tel" id="phone" name="phone" placeholder="Teléfono" required>
+
+      <!-- Service Selection -->
+      <select id="service-select" name="service">
+        <option value="" disabled selected hidden>Servicio deseado</option>
+        <option value="Limpieza interior profunda">Limpieza interior profunda</option>
+        <option value="Pulido y restauración de faros">Pulido y restauración de faros</option>
+        <option value="Aplicación de cera y protección cerámica">Aplicación de cera y protección cerámica</option>
+        <option value="Lavado exterior completo">Lavado exterior completo</option>
+      </select>
+      <small id="service-error" style="color: red; display: none;">
+        Por favor selecciona un servicio.
+      </small>
+
+      <!-- Calendar -->
+      <input id="datetime-picker" name="datetime" placeholder="Selecciona fecha y hora" required>
+      <small id="date-error" style="color: red; display: none;">
+        Por favor selecciona una fecha y hora.
+      </small>
+
+      <!-- Button -->
       <button type="submit">Enviar</button>
     </form>
     <p id="response-msg"></p>
+    <div id="success-toast" class="toast">¡Cita enviada con éxito!</div>
   </section>
 
   <footer>
     <p>&copy; 2025 Shiny Ride Detailing</p>
   </footer>
 
-  <script>
-    document.getElementById('appointment-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-
-      const response = await fetch('/api/appointments', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      });
-
-      const result = await response.json();
-      document.getElementById('response-msg').textContent = result.message;
-      e.target.reset();
-    });
-  </script>
 </body>
+
 </html>
